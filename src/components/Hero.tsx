@@ -50,8 +50,8 @@ export default function Hero() {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--foreground)] via-[var(--foreground)]/10 to-[var(--foreground)]/30" />
 
-      <div className="relative z-10 w-full px-6 pb-20 sm:px-10 sm:pb-28">
-        <h1 className="font-serif text-4xl leading-[1.05] text-white sm:text-6xl lg:text-7xl">
+      <div className="relative z-10 w-full px-5 pb-20 sm:px-8 sm:pb-28 lg:px-6">
+        <h1 className="font-serif text-5xl leading-[0.98] tracking-tight text-white sm:text-7xl md:text-8xl lg:text-[7rem] xl:text-[8.5rem]">
           {headline.map((line, i) => (
             <span key={line} className="block overflow-hidden">
               <motion.span
