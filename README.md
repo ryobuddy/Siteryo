@@ -27,15 +27,25 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
 - `src/components/GrainOverlay.tsx` — textura de grano fija sobre todo el sitio
 - `src/components/Hero.tsx` — hero a pantalla completa con parallax
-- `src/components/CutoutParallaxReveal.tsx` — sección pineada con recorte
-  (PNG sin fondo, fondo eliminado con un modelo de segmentación) de Casa
-  Arena que "se construye" en escena — sube, aparece y se asienta — mientras
-  el terreno (dos `<path>` SVG: uno silvestre, otro pavimentado) y el cielo
-  cruzan de tono y unas partículas ambientales derivan a su propia velocidad.
-  Cada capa se mueve a un ritmo distinto de scroll (GSAP ScrollTrigger
-  `scrub` + `pin`), el mismo patrón de "cutout + fondo animado en paralelo"
-  habitual en scrollytelling corto (TikTok/Reels) y en sitios de Awwwards.
-  Fallback estático para `prefers-reduced-motion`.
+- `src/components/CinematicReveal.tsx` — sección de dos escenas con fondo de
+  vídeo scrubbed por scroll (poster → video → canvas con caché de frames
+  offscreen, con lerp de suavizado y fallback a seek directo), fijada con
+  GSAP ScrollTrigger (`pin` sobre un layer `absolute`, no `position: sticky`
+  — ver nota abajo) mientras el contenido (badges de cristal, titular,
+  tarjeta de contacto, panel de "proceso") se desplaza por encima. Adaptado
+  de un prompt de recreación de landing de IA (stack React/Tailwind) al
+  contexto de Siteryo: mismo sistema de "glass" y reveals, copy y capas de
+  contenido reescritos para arquitectura residencial. Vídeo aún pendiente
+  (ver §Vídeo) — hasta entonces cae a `public/hero.jpg` como fondo estático.
+  **Nota de implementación:** la primera versión usaba `position: sticky` +
+  margen negativo para superponer el fondo al contenido; ese patrón resultó
+  frágil (el navegador calculaba mal el punto de "despegue" del sticky,
+  dejando el fondo visible sobre las secciones siguientes). Se sustituyó por
+  `ScrollTrigger({ pin, pinSpacing: false })` sobre un layer `absolute`,
+  igual que el resto de secciones pineadas del sitio.
+- `src/components/FadeInView.tsx` — wrapper de reveal genérico
+  (IntersectionObserver, `translate-y-8/opacity-0` → `translate-y-0/opacity-100`,
+  700ms ease-out, delay configurable), usado dentro de `CinematicReveal`
 - `src/components/RevealText.tsx` — reveal de titulares línea a línea con
   máscara `overflow-hidden`, reutilizado en Hero, Propiedades y Contacto
 - `src/components/DistortImage.tsx` — distorsión líquida por shader WebGL2
@@ -44,11 +54,11 @@ Abre [http://localhost:3000](http://localhost:3000).
   centrado en el puntero, con `cover` fit calculado en el propio shader.
   Solo se activa con `(hover: hover) and (pointer: fine)` y
   `!prefers-reduced-motion`; cae a `next/image` normal en el resto de casos.
-- `src/components/VideoScrubReveal.tsx` — listo para recibir un vídeo real
-  (ver §Vídeo más abajo): ata `video.currentTime` al progreso de scroll vía
-  GSAP ScrollTrigger (`scrub` + `pin`), con imagen de póster como fallback
-  mientras el vídeo carga o si hay `prefers-reduced-motion`. Aún no está
-  montado en `src/app/page.tsx` — falta el archivo de vídeo.
+- `src/components/CutoutParallaxReveal.tsx` — sección pineada con recorte
+  (PNG sin fondo, fondo eliminado con un modelo de segmentación) de Casa
+  Arena que "se construye" en escena mientras el terreno y el cielo cruzan
+  de tono. Ya no está montada en `page.tsx` (reemplazada por
+  `CinematicReveal`), pero el código queda disponible para reutilizar.
 - `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades
   con reveal por scroll (clip-path "curtain" en la imagen) y cursor de hover
 - `src/components/Stats.tsx` — contadores animados al entrar en viewport
@@ -69,12 +79,11 @@ externos de recorte.
 
 ## Vídeo (pendiente)
 
-`VideoScrubReveal` ya está construido y probado, solo falta el archivo.
-Cuando llegue el vídeo generado:
+`CinematicReveal` ya está construido y probado (cae a `public/hero.jpg`
+mientras tanto), solo falta el archivo. Cuando llegue el vídeo generado:
 
 1. Colócalo en `public/video/hero-scrub.mp4` (specs y prompts en el
    [Motion Playbook](https://claude.ai/code/artifact/4ff833a2-2161-47fe-8e71-85df54fa11ed))
-2. Genera un póster estático (un frame representativo) en
-   `public/video/hero-scrub-poster.jpg`
-3. Móntalo en `src/app/page.tsx`:
-   `<VideoScrubReveal src="/video/hero-scrub.mp4" poster="/video/hero-scrub-poster.jpg" />`
+2. `CinematicReveal` lo recoge automáticamente desde esa ruta — no hace
+   falta tocar `page.tsx`. Si el póster definitivo no debe ser
+   `public/hero.jpg`, cambia `POSTER_SRC` al inicio del componente.
