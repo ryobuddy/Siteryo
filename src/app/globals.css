@@ -41,7 +41,9 @@ html.lenis body {
 }
 
 html.preloading,
-html.preloading body {
+html.preloading body,
+html.menu-open,
+html.menu-open body {
   overflow: hidden;
   height: 100%;
 }

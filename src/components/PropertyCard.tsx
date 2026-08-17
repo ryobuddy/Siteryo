@@ -50,7 +50,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           <p className="font-serif text-lg">{property.name}</p>
           <p className="text-xs tracking-wide text-white/70">{property.location}</p>
         </div>
-        <div className="text-right text-xs tracking-wide text-white/80 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+        <div className="text-right text-xs tracking-wide text-white/80 opacity-100 transition-opacity duration-500 sm:opacity-0 sm:group-hover:opacity-100">
           <p>{property.price}</p>
           <p>{property.area}</p>
         </div>
