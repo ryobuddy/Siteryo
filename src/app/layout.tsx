@@ -3,6 +3,9 @@ import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Nav from "@/components/Nav";
+import Preloader from "@/components/Preloader";
+import Cursor from "@/components/Cursor";
+import GrainOverlay from "@/components/GrainOverlay";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -28,6 +31,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] font-sans text-[var(--foreground)]">
+        <Preloader />
+        <Cursor />
+        <GrainOverlay />
         <SmoothScroll>
           <Nav />
           {children}

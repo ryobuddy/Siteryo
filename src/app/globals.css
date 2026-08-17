@@ -39,3 +39,14 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
+
+html.preloading,
+html.preloading body {
+  overflow: hidden;
+  height: 100%;
+}
+
+.cursor-none-active,
+.cursor-none-active * {
+  cursor: none !important;
+}

@@ -20,7 +20,7 @@ export default function Hero() {
           trigger: sectionRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: true,
+          scrub: 1,
         },
       });
     }, sectionRef);
@@ -34,7 +34,7 @@ export default function Hero() {
     >
       <div
         ref={imageRef}
-        className="absolute inset-0 -top-[10%] h-[120%] w-full scale-105 bg-[url('/hero.svg')] bg-cover bg-center opacity-80"
+        className="absolute inset-0 -top-[10%] h-[120%] w-full scale-105 bg-[url('/hero.jpg')] bg-cover bg-center opacity-80"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--foreground)] via-[var(--foreground)]/10 to-[var(--foreground)]/30" />
 

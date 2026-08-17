@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import MagneticButton from "@/components/MagneticButton";
 
 export default function Contact() {
   return (
@@ -58,12 +59,14 @@ export default function Contact() {
               placeholder="Cuéntanos qué tipo de propiedad buscas"
             />
           </label>
-          <button
+          <MagneticButton
+            as="button"
             type="submit"
-            className="mt-4 w-fit rounded-full bg-[var(--accent)] px-8 py-3 text-sm tracking-wide text-[var(--foreground)] transition-transform hover:scale-105"
+            strength={0.35}
+            className="mt-4 w-fit rounded-full bg-[var(--accent)] px-8 py-3 text-sm tracking-wide text-[var(--foreground)]"
           >
             Enviar consulta
-          </button>
+          </MagneticButton>
         </motion.form>
       </div>
 

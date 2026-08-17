@@ -1,8 +1,14 @@
 "use client";
 
 import { motion } from "motion/react";
+import MagneticButton from "@/components/MagneticButton";
 
-const links = ["Propiedades", "Estudio", "Proceso", "Contacto"];
+const links = [
+  { label: "Propiedades", href: "#propiedades" },
+  { label: "Estudio", href: "#" },
+  { label: "Proceso", href: "#" },
+  { label: "Contacto", href: "#contacto" },
+];
 
 export default function Nav() {
   return (
@@ -18,21 +24,22 @@ export default function Nav() {
       <nav className="hidden gap-10 text-sm tracking-wide text-white/75 sm:flex">
         {links.map((link) => (
           <a
-            key={link}
-            href="#"
+            key={link.label}
+            href={link.href}
             className="group relative py-1 transition-colors hover:text-white"
           >
-            {link}
+            {link.label}
             <span className="absolute bottom-0 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full" />
           </a>
         ))}
       </nav>
-      <a
+      <MagneticButton
         href="#contacto"
+        strength={0.5}
         className="rounded-full border border-white/25 px-5 py-2 text-sm tracking-wide text-white transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
       >
         Agendar visita
-      </a>
+      </MagneticButton>
     </motion.header>
   );
 }

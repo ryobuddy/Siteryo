@@ -15,7 +15,7 @@ export const properties: Property[] = [
     location: "Sotogrande, Cádiz",
     price: "€2.450.000",
     area: "480 m²",
-    image: "/properties/arena.svg",
+    image: "/properties/arena.jpg",
     size: "large",
   },
   {
@@ -24,7 +24,7 @@ export const properties: Property[] = [
     location: "Salamanca, Madrid",
     price: "€1.890.000",
     area: "210 m²",
-    image: "/properties/lumiere.svg",
+    image: "/properties/lumiere.jpg",
     size: "small",
   },
   {
@@ -33,7 +33,7 @@ export const properties: Property[] = [
     location: "Marbella, Málaga",
     price: "€3.200.000",
     area: "610 m²",
-    image: "/properties/oliva.svg",
+    image: "/properties/oliva.jpg",
     size: "small",
   },
   {
@@ -42,7 +42,7 @@ export const properties: Property[] = [
     location: "Poblenou, Barcelona",
     price: "€980.000",
     area: "160 m²",
-    image: "/properties/bruma.svg",
+    image: "/properties/bruma.jpg",
     size: "large",
   },
 ];

@@ -17,10 +17,11 @@ export default function Properties() {
         opacity: 0,
         duration: 0.9,
         ease: "power3.out",
-        stagger: 0.12,
+        stagger: { each: 0.12, from: "center" },
         scrollTrigger: {
           trigger: gridRef.current,
           start: "top 80%",
+          toggleActions: "play none none none",
         },
       });
     }, gridRef);
