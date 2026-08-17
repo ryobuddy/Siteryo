@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
-import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "motion/react";
+import DistortImage from "@/components/DistortImage";
 import type { Property } from "@/lib/properties";
 
 export default function PropertyCard({ property }: { property: Property }) {
@@ -31,12 +31,9 @@ export default function PropertyCard({ property }: { property: Property }) {
           : "aspect-[4/3] sm:aspect-auto sm:h-full"
       }`}
     >
-      <Image
-        data-card-image
+      <DistortImage
         src={property.image}
         alt={property.name}
-        fill
-        sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
         className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-80 transition-opacity duration-500 group-hover:opacity-100" />

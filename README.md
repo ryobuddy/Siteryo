@@ -38,6 +38,17 @@ Abre [http://localhost:3000](http://localhost:3000).
   Fallback estático para `prefers-reduced-motion`.
 - `src/components/RevealText.tsx` — reveal de titulares línea a línea con
   máscara `overflow-hidden`, reutilizado en Hero, Propiedades y Contacto
+- `src/components/DistortImage.tsx` — distorsión líquida por shader WebGL2
+  (sin dependencias — WebGL nativo) sobre la imagen de cada
+  `PropertyCard` al pasar el cursor: desplazamiento radial + ripple
+  centrado en el puntero, con `cover` fit calculado en el propio shader.
+  Solo se activa con `(hover: hover) and (pointer: fine)` y
+  `!prefers-reduced-motion`; cae a `next/image` normal en el resto de casos.
+- `src/components/VideoScrubReveal.tsx` — listo para recibir un vídeo real
+  (ver §Vídeo más abajo): ata `video.currentTime` al progreso de scroll vía
+  GSAP ScrollTrigger (`scrub` + `pin`), con imagen de póster como fallback
+  mientras el vídeo carga o si hay `prefers-reduced-motion`. Aún no está
+  montado en `src/app/page.tsx` — falta el archivo de vídeo.
 - `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades
   con reveal por scroll (clip-path "curtain" en la imagen) y cursor de hover
 - `src/components/Stats.tsx` — contadores animados al entrar en viewport
@@ -55,3 +66,15 @@ grano generada, sin depender de bancos de imágenes externos.
 [rembg](https://github.com/danielgatis/rembg) (modelo `isnet-general-use`) —
 misma licencia que la foto original (Unsplash), sin depender de servicios
 externos de recorte.
+
+## Vídeo (pendiente)
+
+`VideoScrubReveal` ya está construido y probado, solo falta el archivo.
+Cuando llegue el vídeo generado:
+
+1. Colócalo en `public/video/hero-scrub.mp4` (specs y prompts en el
+   [Motion Playbook](https://claude.ai/code/artifact/4ff833a2-2161-47fe-8e71-85df54fa11ed))
+2. Genera un póster estático (un frame representativo) en
+   `public/video/hero-scrub-poster.jpg`
+3. Móntalo en `src/app/page.tsx`:
+   `<VideoScrubReveal src="/video/hero-scrub.mp4" poster="/video/hero-scrub-poster.jpg" />`
