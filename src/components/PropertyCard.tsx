@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
+import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import type { Property } from "@/lib/properties";
 
@@ -30,11 +31,13 @@ export default function PropertyCard({ property }: { property: Property }) {
           : "aspect-[4/3] sm:aspect-auto sm:h-full"
       }`}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- placeholder SVG illustration, swap for next/image once real photography is in */}
-      <img
+      <Image
+        data-card-image
         src={property.image}
         alt={property.name}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+        fill
+        sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
 

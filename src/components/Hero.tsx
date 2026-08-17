@@ -13,6 +13,11 @@ export default function Hero() {
   useEffect(() => {
     if (!imageRef.current || !sectionRef.current) return;
     const ctx = gsap.context(() => {
+      gsap.fromTo(
+        imageRef.current,
+        { scale: 1.18, opacity: 0 },
+        { scale: 1.05, opacity: 0.8, duration: 1.8, delay: 0.2, ease: "power3.out" }
+      );
       gsap.to(imageRef.current, {
         yPercent: 18,
         ease: "none",

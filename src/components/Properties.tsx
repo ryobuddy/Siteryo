@@ -11,19 +11,32 @@ export default function Properties() {
   useEffect(() => {
     if (!gridRef.current) return;
     const cards = gridRef.current.querySelectorAll("[data-card]");
+    const images = gridRef.current.querySelectorAll("[data-card-image]");
     const ctx = gsap.context(() => {
-      gsap.from(cards, {
-        y: 60,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        stagger: { each: 0.12, from: "center" },
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: gridRef.current,
           start: "top 80%",
           toggleActions: "play none none none",
         },
       });
+      tl.from(cards, {
+        y: 60,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        stagger: { each: 0.12, from: "center" },
+      }).from(
+        images,
+        {
+          scale: 1.25,
+          duration: 1.3,
+          ease: "power3.out",
+          stagger: { each: 0.12, from: "center" },
+          clearProps: "scale",
+        },
+        "<"
+      );
     }, gridRef);
     return () => ctx.revert();
   }, []);

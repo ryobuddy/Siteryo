@@ -34,7 +34,7 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/lib/useMediaQuery.ts` — hook de media query vía `useSyncExternalStore`
 - `src/lib/properties.ts` — datos de las propiedades mostradas
 
-Las imágenes en `public/properties/`, `public/hero.jpg` y `public/grain.jpg`
-son fotografía sintética generada (gradientes de luz, profundidad de campo y
-grano, sin depender de bancos de imágenes externos) — reemplázalas por
-fotografía real de las propiedades cuando esté disponible.
+Las imágenes en `public/properties/` y `public/hero.jpg` son fotografía real
+con licencia libre (Unsplash) — reemplázalas por fotografía real de las
+propiedades cuando esté disponible. `public/grain.jpg` sigue siendo una
+textura de grano generada, sin depender de bancos de imágenes externos.
