@@ -15,8 +15,15 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         imageRef.current,
-        { scale: 1.18, opacity: 0 },
-        { scale: 1.05, opacity: 0.8, duration: 1.8, delay: 0.2, ease: "power3.out" }
+        { scale: 1.18, opacity: 0, clipPath: "inset(0% 100% 0% 0%)" },
+        {
+          scale: 1.05,
+          opacity: 0.8,
+          clipPath: "inset(0% 0% 0% 0%)",
+          duration: 1.8,
+          delay: 0.2,
+          ease: "power3.inOut",
+        }
       );
       gsap.to(imageRef.current, {
         yPercent: 18,

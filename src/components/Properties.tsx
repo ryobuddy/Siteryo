@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { properties } from "@/lib/properties";
 import PropertyCard from "@/components/PropertyCard";
+import RevealText from "@/components/RevealText";
 
 export default function Properties() {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -29,11 +30,12 @@ export default function Properties() {
       }).from(
         images,
         {
-          scale: 1.25,
-          duration: 1.3,
-          ease: "power3.out",
+          clipPath: "inset(100% 0% 0% 0%)",
+          scale: 1.2,
+          duration: 1.1,
+          ease: "power3.inOut",
           stagger: { each: 0.12, from: "center" },
-          clearProps: "scale",
+          clearProps: "clipPath,scale",
         },
         "<"
       );
@@ -48,11 +50,11 @@ export default function Properties() {
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-14 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <h2 className="font-serif text-3xl leading-tight text-[var(--foreground)] sm:text-5xl">
-            Propiedades
-            <br />
-            seleccionadas
-          </h2>
+          <RevealText
+            as="h2"
+            lines={["Propiedades", "seleccionadas"]}
+            className="font-serif text-3xl leading-tight text-[var(--foreground)] sm:text-5xl"
+          />
           <p className="max-w-xs text-sm text-[var(--foreground)]/60">
             Una curaduría de residencias donde arquitectura y ubicación
             justifican cada metro cuadrado.

@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import MagneticButton from "@/components/MagneticButton";
+import RevealText from "@/components/RevealText";
 
 export default function Contact() {
   return (
@@ -16,11 +17,11 @@ export default function Contact() {
           viewport={{ once: true, margin: "-15% 0px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h2 className="font-serif text-3xl leading-tight sm:text-5xl">
-            Hablemos de tu
-            <br />
-            próxima propiedad.
-          </h2>
+          <RevealText
+            as="h2"
+            lines={["Hablemos de tu", "próxima propiedad."]}
+            className="font-serif text-3xl leading-tight sm:text-5xl"
+          />
           <p className="mt-6 max-w-sm text-sm text-white/60">
             Cuéntanos qué buscas y un asesor especializado en arquitectura
             residencial te contactará en menos de 24 horas.
