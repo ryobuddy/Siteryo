@@ -27,12 +27,15 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
 - `src/components/GrainOverlay.tsx` — textura de grano fija sobre todo el sitio
 - `src/components/Hero.tsx` — hero a pantalla completa con parallax
-- `src/components/FrameSequenceReveal.tsx` — sección pineada que revela una
-  secuencia real de 60 frames de vídeo en un `<canvas>`, con el avance
-  controlado por scroll vía GSAP ScrollTrigger (`scrub` + `pin`). Es la misma
-  técnica que usan sitios como [Magma](https://thisismagma.com) — estudiada
-  a partir de un clon en GitHub — adaptada aquí a React/Next con fallback
-  estático para `prefers-reduced-motion`.
+- `src/components/CutoutParallaxReveal.tsx` — sección pineada con recorte
+  (PNG sin fondo, fondo eliminado con un modelo de segmentación) de Casa
+  Arena que "se construye" en escena — sube, aparece y se asienta — mientras
+  el terreno (dos `<path>` SVG: uno silvestre, otro pavimentado) y el cielo
+  cruzan de tono y unas partículas ambientales derivan a su propia velocidad.
+  Cada capa se mueve a un ritmo distinto de scroll (GSAP ScrollTrigger
+  `scrub` + `pin`), el mismo patrón de "cutout + fondo animado en paralelo"
+  habitual en scrollytelling corto (TikTok/Reels) y en sitios de Awwwards.
+  Fallback estático para `prefers-reduced-motion`.
 - `src/components/RevealText.tsx` — reveal de titulares línea a línea con
   máscara `overflow-hidden`, reutilizado en Hero, Propiedades y Contacto
 - `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades
@@ -47,9 +50,8 @@ Las imágenes en `public/properties/` y `public/hero.jpg` son fotografía real
 con licencia libre (Unsplash). `public/grain.jpg` sigue siendo una textura de
 grano generada, sin depender de bancos de imágenes externos.
 
-Los frames en `public/frames/` (`f000.jpg`…`f059.jpg`) se extrajeron de un
-vídeo de dron real con licencia libre: *Drone video of Keila waterfall and
-manor in Keila-Joa, Estonia*, © Sillerkiil, [CC BY-SA
-4.0](https://creativecommons.org/licenses/by-sa/4.0/), vía Wikimedia
-Commons. El crédito se muestra en la propia sección del sitio (requisito de
-la licencia BY-SA); no se presenta como una de las propiedades en venta.
+`public/cutouts/casa-arena-cutout.png` es un recorte (fondo transparente) de
+`public/properties/arena.jpg`, generado localmente con
+[rembg](https://github.com/danielgatis/rembg) (modelo `isnet-general-use`) —
+misma licencia que la foto original (Unsplash), sin depender de servicios
+externos de recorte.
