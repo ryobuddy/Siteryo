@@ -27,7 +27,16 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
 - `src/components/GrainOverlay.tsx` — textura de grano fija sobre todo el sitio
 - `src/components/Hero.tsx` — hero a pantalla completa con parallax
-- `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades con reveal por scroll y cursor de hover
+- `src/components/FrameSequenceReveal.tsx` — sección pineada que revela una
+  secuencia real de 60 frames de vídeo en un `<canvas>`, con el avance
+  controlado por scroll vía GSAP ScrollTrigger (`scrub` + `pin`). Es la misma
+  técnica que usan sitios como [Magma](https://thisismagma.com) — estudiada
+  a partir de un clon en GitHub — adaptada aquí a React/Next con fallback
+  estático para `prefers-reduced-motion`.
+- `src/components/RevealText.tsx` — reveal de titulares línea a línea con
+  máscara `overflow-hidden`, reutilizado en Hero, Propiedades y Contacto
+- `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades
+  con reveal por scroll (clip-path "curtain" en la imagen) y cursor de hover
 - `src/components/Stats.tsx` — contadores animados al entrar en viewport
 - `src/components/Contact.tsx` — formulario de contacto + footer
 - `src/lib/gsap.ts` — registro centralizado del plugin ScrollTrigger
@@ -35,6 +44,12 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/lib/properties.ts` — datos de las propiedades mostradas
 
 Las imágenes en `public/properties/` y `public/hero.jpg` son fotografía real
-con licencia libre (Unsplash) — reemplázalas por fotografía real de las
-propiedades cuando esté disponible. `public/grain.jpg` sigue siendo una
-textura de grano generada, sin depender de bancos de imágenes externos.
+con licencia libre (Unsplash). `public/grain.jpg` sigue siendo una textura de
+grano generada, sin depender de bancos de imágenes externos.
+
+Los frames en `public/frames/` (`f000.jpg`…`f059.jpg`) se extrajeron de un
+vídeo de dron real con licencia libre: *Drone video of Keila waterfall and
+manor in Keila-Joa, Estonia*, © Sillerkiil, [CC BY-SA
+4.0](https://creativecommons.org/licenses/by-sa/4.0/), vía Wikimedia
+Commons. El crédito se muestra en la propia sección del sitio (requisito de
+la licencia BY-SA); no se presenta como una de las propiedades en venta.
