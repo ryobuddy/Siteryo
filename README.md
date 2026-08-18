@@ -26,7 +26,10 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/Cursor.tsx` — cursor custom (punto + anillo) en desktop con puntero fino
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
 - `src/components/GrainOverlay.tsx` — textura de grano fija sobre todo el sitio
-- `src/components/Hero.tsx` — hero a pantalla completa con parallax
+- `src/components/Hero.tsx` — hero a pantalla completa con parallax, fondo
+  de vídeo real (`public/videos/hero-loop.mp4`/`.webm`, dolly de la villa
+  con la piscina infinita, ida-vuelta para loop sin salto) en vez de una
+  foto estática — cae a `/hero.jpg` con `prefers-reduced-motion`
 - `src/components/CinematicReveal.tsx` — sección de dos escenas con el
   recorte (fondo transparente) de un vídeo real de la villa flotando sobre
   un fondo propio (gradiente + partículas ambientales), fijada con GSAP
@@ -35,7 +38,18 @@ Abre [http://localhost:3000](http://localhost:3000).
   de contacto, panel de "proceso") se desplaza por encima. Adaptado de un
   prompt de recreación de landing de IA (stack React/Tailwind) al contexto
   de Siteryo: mismo sistema de "glass" y reveals, copy y capas de contenido
-  reescritos para arquitectura residencial.
+  reescritos para arquitectura residencial. El fondo ya no es un degradado
+  CSS plano: debajo del recorte hay una capa de vídeo real
+  (`public/videos/ambient-loop.mp4`/`.webm`, el mismo metraje del hero, a
+  480px y con `blur-2xl` + `saturate-150`) que aporta movimiento y luz
+  cálida atmosférica sin distraer del texto — el degradado de color sigue
+  ahí encima, pero con menos opacidad para dejarla pasar.
+  **Nota de implementación (fit del recorte):** la villa usaba `object-fit:
+  cover`, y como el metraje real hace dolly-in (la cámara se acerca en cada
+  frame), la villa crecía hasta llenar el viewport y tapaba el titular en
+  el momento clave del scroll. Se cambió a `contain` + escala fija (0.5) y
+  anclaje inferior (0.56) para que se lea como un objeto flotante
+  "grounded", con espacio para el texto alrededor.
   **Nota de implementación (sticky):** la primera versión usaba
   `position: sticky` + margen negativo para superponer el fondo al
   contenido; ese patrón resultó frágil (el navegador calculaba mal el punto
@@ -72,9 +86,10 @@ Abre [http://localhost:3000](http://localhost:3000).
   el hero). Se reemplazó por `<video>` nativo porque aquí no hace falta
   scroll-scrub frame a frame — es un loop continuo — así que el decodificador
   de hardware del navegador hace el trabajo mejor y con menos código que
-  reimplementarlo. (El hero sigue usando canvas + PNG porque ahí sí se
-  necesita seek preciso ligado al scroll, y el seek de `<video>` no es
-  suficientemente fino/estable para eso — ver nota del hero abajo.)
+  reimplementarlo. (El recorte de la villa en `CinematicReveal` sigue
+  usando canvas + PNG porque ahí sí se necesita seek preciso ligado al
+  scroll, y el seek de `<video>` no es suficientemente fino/estable para
+  eso — ver nota de vídeo del hero abajo.)
 - `src/components/CutoutParallaxReveal.tsx` — sección pineada con recorte
   (PNG sin fondo, fondo eliminado con un modelo de segmentación) de Casa
   Arena que "se construye" en escena mientras el terreno y el cielo cruzan
@@ -98,7 +113,28 @@ grano generada, sin depender de bancos de imágenes externos.
 misma licencia que la foto original (Unsplash), sin depender de servicios
 externos de recorte.
 
-## Vídeo del Hero: `public/frames/hero-cutout/`
+## Vídeo de fondo del Hero y capa ambiental de CinematicReveal
+
+`public/videos/hero-loop.mp4`/`.webm` y `public/videos/ambient-loop.mp4`/`.webm`
+vienen del mismo metraje real de Kling AI que el recorte (ver abajo), sin
+recortar el fondo — es justo el fondo (piscina infinita, cielo de atardecer)
+lo que se quiere mostrar aquí.
+
+- **`hero-loop`** (1600px de ancho, ~6MB mp4 / ~3MB webm): fondo a pantalla
+  completa del `Hero`, reemplazando la foto estática `hero.jpg`. Recortada
+  la franja con la marca de agua de Kling, ida-vuelta (`reverse` + `concat`
+  con `ffmpeg`) para que el `<video loop>` no salte al reiniciar.
+- **`ambient-loop`** (480px de ancho — se sirve muy pequeño porque va con
+  `blur-2xl`, así que la resolución no importa; ~550KB): misma técnica de
+  ida-vuelta, colocada detrás del recorte de la villa en `CinematicReveal`
+  como capa de luz y color en movimiento, sustituyendo lo que antes era un
+  degradado CSS plano. El degradado de color sigue encima pero con menos
+  opacidad, para dejar pasar el brillo del vídeo sin perder contraste con
+  el texto.
+
+Ambas caen a la imagen/gradiente estático con `prefers-reduced-motion`.
+
+## Recorte de la villa en CinematicReveal: `public/frames/hero-cutout/`
 
 38 PNG con transparencia (`f000.png`…`f037.png`, 1280px de ancho) que
 `CinematicReveal` precarga y dibuja en un `<canvas>` según el progreso de

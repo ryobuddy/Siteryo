@@ -194,10 +194,24 @@ export default function CinematicReveal() {
   return (
     <div ref={containerRef} className="relative bg-[#0a0a0a]">
       <div ref={bgRef} className="absolute inset-0 h-svh w-full overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1c2419] via-[#141712] to-[#0a0a0a]" />
+        {!prefersReducedMotion && (
+          <video
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-80 blur-2xl saturate-150"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden
+          >
+            <source src="/videos/ambient-loop.webm" type="video/webm" />
+            <source src="/videos/ambient-loop.mp4" type="video/mp4" />
+          </video>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1c2419]/55 via-[#141712]/65 to-[#0a0a0a]/90" />
         <div
           ref={gradientRef}
-          className="absolute inset-0 bg-gradient-to-b from-[#2a2013] via-[#181410] to-[#0a0a0a] opacity-0"
+          className="absolute inset-0 bg-gradient-to-b from-[#2a2013]/55 via-[#181410]/65 to-[#0a0a0a]/90 opacity-0"
         />
 
         <div className="absolute inset-0">

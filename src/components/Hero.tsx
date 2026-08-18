@@ -3,12 +3,14 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { gsap } from "@/lib/gsap";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 
 const headline = ["Arquitectura", "que se habita", "antes de vivirla."];
 
 export default function Hero() {
   const imageRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   useEffect(() => {
     if (!imageRef.current || !sectionRef.current) return;
@@ -46,8 +48,26 @@ export default function Hero() {
     >
       <div
         ref={imageRef}
-        className="absolute inset-0 -top-[10%] h-[120%] w-full scale-105 bg-[url('/hero.jpg')] bg-cover bg-center opacity-80"
-      />
+        className="absolute inset-0 -top-[10%] h-[120%] w-full scale-105 opacity-80"
+      >
+        {prefersReducedMotion ? (
+          <div className="h-full w-full bg-[url('/hero.jpg')] bg-cover bg-center" />
+        ) : (
+          <video
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/hero.jpg"
+            aria-hidden
+          >
+            <source src="/videos/hero-loop.webm" type="video/webm" />
+            <source src="/videos/hero-loop.mp4" type="video/mp4" />
+          </video>
+        )}
+      </div>
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--foreground)] via-[var(--foreground)]/10 to-[var(--foreground)]/30" />
 
       <div className="relative z-10 w-full px-5 pb-20 sm:px-8 sm:pb-28 lg:px-6">
