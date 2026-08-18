@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, type MouseEvent } from "react";
+import { useCallback, useRef, type MouseEvent } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import DistortImage from "@/components/DistortImage";
+import LoopBackground from "@/components/LoopBackground";
 import type { Property } from "@/lib/properties";
 
 export default function PropertyCard({ property }: { property: Property }) {
@@ -19,6 +20,13 @@ export default function PropertyCard({ property }: { property: Property }) {
     y.set(event.clientY - bounds.top);
   }
 
+  const loopBackground = property.loopBackground;
+  const frameSrc = useCallback(
+    (index: number) =>
+      `${loopBackground?.prefix}/f${String(index).padStart(3, "0")}.webp`,
+    [loopBackground?.prefix]
+  );
+
   return (
     <a
       ref={cardRef}
@@ -28,14 +36,24 @@ export default function PropertyCard({ property }: { property: Property }) {
       className={`group relative block overflow-hidden rounded-sm bg-[var(--foreground)]/5 ${
         property.size === "large"
           ? "sm:col-span-2 sm:row-span-2 aspect-[4/5]"
-          : "aspect-[4/3] sm:aspect-auto sm:h-full"
+          : "aspect-[4/3] sm:aspect-[4/5]"
       }`}
     >
-      <DistortImage
-        src={property.image}
-        alt={property.name}
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-      />
+      {loopBackground ? (
+        <LoopBackground
+          frameCount={loopBackground.frameCount}
+          frameSrc={frameSrc}
+          fallbackSrc={property.image}
+          alt={property.name}
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+        />
+      ) : (
+        <DistortImage
+          src={property.image}
+          alt={property.name}
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
 
       <motion.div

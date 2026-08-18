@@ -61,6 +61,14 @@ Abre [http://localhost:3000](http://localhost:3000).
   centrado en el puntero, con `cover` fit calculado en el propio shader.
   Solo se activa con `(hover: hover) and (pointer: fine)` y
   `!prefers-reduced-motion`; cae a `next/image` normal en el resto de casos.
+- `src/components/LoopBackground.tsx` — loop de fondo tipo cinemagraph: secuencia
+  de frames (`<canvas>`, ida-vuelta/ping-pong para que cierre sin salto) en vez
+  de la foto estática de una card. Pausa el `requestAnimationFrame` fuera de
+  viewport (`IntersectionObserver`) y cae a una imagen fija con
+  `prefers-reduced-motion`. Usado en la card de "Ático Lumière" con
+  `public/frames/card-loop/` (cortina de lino moviéndose, generada con Kling
+  AI). Cada `Property` puede activar esta card-loop declarando
+  `loopBackground: { frameCount, prefix }` en `src/lib/properties.ts`.
 - `src/components/CutoutParallaxReveal.tsx` — sección pineada con recorte
   (PNG sin fondo, fondo eliminado con un modelo de segmentación) de Casa
   Arena que "se construye" en escena mientras el terreno y el cielo cruzan
@@ -114,3 +122,15 @@ el vídeo con una cuenta que cubra uso comercial.
 reemplazar los PNG en `public/frames/hero-cutout/`). El componente no
 necesita cambios si el número de frames es distinto — ajusta `FRAME_COUNT`
 al inicio de `CinematicReveal.tsx`.
+
+## Loop de fondo: `public/frames/card-loop/`
+
+80 WebP (`f000.webp`…`f079.webp`, 900px de ancho) de una cortina de lino
+moviéndose con suavidad, generados también con Kling AI (5s, 1920×1080).
+A diferencia del hero, aquí **no hace falta quitar el fondo** — el clip entero
+es el fondo de la card, así que el proceso fue más simple: extraer frames,
+recortar la franja inferior (llevaba la marca de agua de Kling), reducir a 1
+de cada 3 frames y armar una secuencia ida-vuelta (ping-pong) para que el
+loop cierre sin salto, sin necesitar crossfade. Mismo aviso de licencia que
+el vídeo del hero: revisa los términos de la cuenta de Kling antes de
+producción.
