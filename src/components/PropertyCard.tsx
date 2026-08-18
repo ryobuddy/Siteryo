@@ -29,8 +29,10 @@ export default function PropertyCard({ property }: { property: Property }) {
       onMouseMove={handleMouseMove}
       className={`group relative block overflow-hidden rounded-sm bg-[var(--foreground)]/5 ${
         property.size === "large"
-          ? "sm:col-span-2 sm:row-span-2 aspect-[4/5]"
-          : "aspect-[4/3] sm:aspect-[4/5]"
+          ? "sm:col-span-2 lg:col-span-2 lg:row-span-2 aspect-[4/5]"
+          : property.size === "banner"
+            ? "sm:col-span-2 lg:col-span-3 aspect-[4/3] lg:aspect-[21/9]"
+            : "aspect-[4/3] sm:aspect-[4/5]"
       }`}
     >
       {property.loopVideo ? (

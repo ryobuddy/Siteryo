@@ -126,7 +126,17 @@ Abre [http://localhost:3000](http://localhost:3000).
   de tono. Ya no está montada en `page.tsx` (reemplazada por
   `CinematicReveal`), pero el código queda disponible para reutilizar.
 - `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades
-  con reveal por scroll (clip-path "curtain" en la imagen) y cursor de hover
+  con reveal por scroll (clip-path "curtain" en la imagen) y cursor de hover.
+  Bento de 3 columnas en desktop: una card grande (`size: "large"`, Casa
+  Arena) a la izquierda ocupando 2 filas, dos pequeñas apiladas a la
+  derecha (misma altura combinada que la grande) y un banner ancho
+  (`size: "banner"`, Loft Bruma) a todo el ancho debajo. **Nota:** la
+  versión anterior tenía 4 columnas con dos cards "large" — como ambas
+  tenían la misma altura pero una empezaba una fila más abajo que la
+  otra (por las dos cards pequeñas intercaladas), dejaban un hueco vacío
+  grande debajo de la primera. El bento de 3 columnas con un tamaño
+  "banner" distinto para la segunda evita ese desajuste de raíz en vez
+  de parchearlo con alturas fijas.
 - `src/components/Stats.tsx` — contadores animados al entrar en viewport
 - `src/components/Contact.tsx` — formulario de contacto + footer. El
   formulario es funcional (antes solo hacía `preventDefault()` y no

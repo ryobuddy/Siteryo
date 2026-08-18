@@ -4,7 +4,7 @@ export type Property = {
   location: string;
   description: string;
   image: string;
-  size: "large" | "small";
+  size: "large" | "small" | "banner";
   loopVideo?: string;
   loopVideoWebm?: string;
 };
@@ -46,6 +46,6 @@ export const properties: Property[] = [
     description:
       "Antigua nave reconvertida en vivienda de planta abierta, con el verde entrando por los ventanales.",
     image: "/properties/bruma.jpg",
-    size: "large",
+    size: "banner",
   },
 ];
