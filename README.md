@@ -44,10 +44,17 @@ Abre [http://localhost:3000](http://localhost:3000).
   al botón disparador al cerrar, y respeta `prefers-reduced-motion`. Solo
   se monta en `/` — sus pasos apuntan a secciones que no existen en
   `/propiedades/[id]`.
-- `src/components/Hero.tsx` — hero a pantalla completa con parallax, fondo
-  de vídeo real (`public/videos/hero-loop.mp4`/`.webm`, dolly de la villa
-  con la piscina infinita, ida-vuelta para loop sin salto) en vez de una
-  foto estática — cae a `/hero.jpg` con `prefers-reduced-motion`
+- `src/components/Hero.tsx` — hero a pantalla completa con parallax y
+  fondo animado atado al scroll (ver `WebGLScrollHero` abajo) en vez de
+  una foto estática — cae a `/hero.jpg` con `prefers-reduced-motion`.
+  **Nota de implementación (scroll-driven, no autoplay):** la primera
+  versión del fondo era un `<video autoplay loop>` — funcionaba, pero
+  contradecía el prompt de referencia original ("motion is scroll-driven
+  only", nada de loop automático). Se reemplazó por una secuencia de 41
+  frames en `<canvas>` cuyo índice depende solo del progreso de scroll
+  de la sección — igual que la villa de `CinematicReveal`, y por la misma
+  razón: sin scroll, el fondo no se mueve (verificado con diff de píxeles
+  entre capturas sin scrollear: ~0 de diferencia salvo el grano).
 - `src/components/CinematicReveal.tsx` — sección de dos escenas con el
   recorte (fondo transparente) de un vídeo real de la villa flotando sobre
   un fondo propio (gradiente + partículas ambientales), fijada con GSAP
@@ -87,18 +94,21 @@ Abre [http://localhost:3000](http://localhost:3000).
   700ms ease-out, delay configurable), usado dentro de `CinematicReveal`
 - `src/components/RevealText.tsx` — reveal de titulares línea a línea con
   máscara `overflow-hidden`, reutilizado en Hero, Propiedades y Contacto
-- `src/components/WebGLVideoHero.tsx` — el vídeo del Hero no es un
-  `<video>` plano: se decodifica en un `<video>` invisible (fuera de
-  pantalla vía `opacity-0`, nunca `display:none` — algunos navegadores
-  dejan de decodificar un `<video>` con `display:none`, y de hecho eso
-  rompía el autoplay hasta que se cambió) y cada frame se sube como
-  textura a un shader WebGL2 propio (mismo patrón sin dependencias que
-  `AmbientImage`, adaptado a una fuente que cambia cada frame en vez de
-  una imagen estática): distorsión radial que sigue al cursor, grano
-  animado por función de ruido (`random()` en el fragment shader, no una
-  textura de ruido pregenerada) y una aberración cromática sutil cerca
-  del puntero. Solo se activa con `(hover: hover) and (pointer: fine)` y
-  `!prefers-reduced-motion`; cae al `<video>` nativo en el resto de casos.
+- `src/components/WebGLScrollHero.tsx` — el fondo del Hero: precarga 41
+  frames (`public/frames/hero-scrub/`, ver §Vídeo abajo) y los dibuja en
+  un `<canvas>` con un shader WebGL2 propio, igual que `CinematicReveal`
+  hace con la villa pero con la distorsión/grano de
+  `WebGLVideoHero` (ver historial — ya no existe como componente propio,
+  se fusionó aquí) encima: sube los dos frames más cercanos al progreso
+  de scroll como texturas (`uTextureA`/`uTextureB`) y los mezcla
+  (`uBlend`) para evitar el parpadeo de un corte duro entre frames,
+  aplica distorsión radial que sigue al cursor, aberración cromática
+  cerca del puntero y grano animado por función de ruido. El progreso
+  viene de un `ScrollTrigger` propio sobre la sección del Hero
+  (`start: "top top"`, `end: "bottom top"`) — sin ese scroll, el
+  `requestAnimationFrame` sigue corriendo (por el grano/ripple del
+  cursor) pero el frame mostrado no cambia. Cae a `/hero.jpg` estático
+  con `prefers-reduced-motion` o si WebGL2 no está disponible.
 - `src/components/AmbientImage.tsx` — reemplaza a `DistortImage`. La
   diferencia no es cosmética: `DistortImage` solo se movía al pasar el
   cursor (quieta el resto del tiempo); `AmbientImage` anima sola, todo el
@@ -182,17 +192,20 @@ grano generada, sin depender de bancos de imágenes externos.
 misma licencia que la foto original (Unsplash), sin depender de servicios
 externos de recorte.
 
-## Vídeo de fondo del Hero y capa ambiental de CinematicReveal
+## Fondo del Hero: `public/frames/hero-scrub/` y capa ambiental de CinematicReveal
 
-`public/videos/hero-loop.mp4`/`.webm` y `public/videos/ambient-loop.mp4`/`.webm`
-vienen del mismo metraje real de Kling AI que el recorte (ver abajo), sin
-recortar el fondo — es justo el fondo (piscina infinita, cielo de atardecer)
-lo que se quiere mostrar aquí.
+`public/frames/hero-scrub/` (41 WebP, `f000.webp`…`f040.webp`, 1440px de
+ancho, ~1.6MB en total) y `public/videos/ambient-loop.mp4`/`.webm` vienen
+del mismo metraje real de Kling AI que el recorte de la villa (ver abajo),
+sin quitarle el fondo — es justo el fondo (piscina infinita, cielo de
+atardecer) lo que se quiere mostrar aquí.
 
-- **`hero-loop`** (1600px de ancho, ~6MB mp4 / ~3MB webm): fondo a pantalla
-  completa del `Hero`, reemplazando la foto estática `hero.jpg`. Recortada
-  la franja con la marca de agua de Kling, ida-vuelta (`reverse` + `concat`
-  con `ffmpeg`) para que el `<video loop>` no salte al reiniciar.
+- **`hero-scrub`**: fondo del `Hero`, atado al scroll de la sección (ver
+  `WebGLScrollHero` arriba), reemplazando la foto estática `hero.jpg`.
+  Frames extraídos a 24fps y reducidos a 1 de cada 3 (121 → 41), franja
+  con la marca de agua de Kling recortada. A diferencia de un `<video>`,
+  aquí el frame mostrado es una función directa del scroll — nada se
+  reproduce solo.
 - **`ambient-loop`** (480px de ancho — se sirve muy pequeño porque va con
   `blur-2xl`, así que la resolución no importa; ~550KB): misma técnica de
   ida-vuelta, colocada detrás del recorte de la villa en `CinematicReveal`

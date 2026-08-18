@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { gsap } from "@/lib/gsap";
 import { useMediaQuery } from "@/lib/useMediaQuery";
-import WebGLVideoHero from "@/components/WebGLVideoHero";
+import WebGLScrollHero from "@/components/WebGLScrollHero";
 
 const headline = ["Arquitectura", "que se habita", "antes de vivirla."];
+const HERO_FRAME_COUNT = 41;
 
 export default function Hero() {
   const imageRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const frameSrc = useCallback(
+    (i: number) => `/frames/hero-scrub/f${String(i).padStart(3, "0")}.webp`,
+    []
+  );
 
   useEffect(() => {
     if (!imageRef.current || !sectionRef.current) return;
@@ -55,10 +60,11 @@ export default function Hero() {
         {prefersReducedMotion ? (
           <div className="h-full w-full bg-[url('/hero.jpg')] bg-cover bg-center" />
         ) : (
-          <WebGLVideoHero
-            src="/videos/hero-loop.mp4"
-            webmSrc="/videos/hero-loop.webm"
+          <WebGLScrollHero
+            frameCount={HERO_FRAME_COUNT}
+            frameSrc={frameSrc}
             poster="/hero.jpg"
+            sectionRef={sectionRef}
             className="h-full w-full object-cover"
           />
         )}
