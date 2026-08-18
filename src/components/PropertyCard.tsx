@@ -38,13 +38,13 @@ export default function PropertyCard({ property }: { property: Property }) {
           src={property.loopVideo}
           webmSrc={property.loopVideoWebm}
           fallbackSrc={property.image}
-          alt={property.name}
+          alt={`${property.name}, ${property.location} — ${property.description}`}
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
       ) : (
         <DistortImage
           src={property.image}
-          alt={property.name}
+          alt={`${property.name}, ${property.location} — ${property.description}`}
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
       )}

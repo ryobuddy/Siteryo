@@ -13,11 +13,33 @@ const links = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState<string | null>(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle("menu-open", open);
     return () => document.documentElement.classList.remove("menu-open");
   }, [open]);
+
+  // Scrollspy: highlight whichever nav link's section is crossing the
+  // vertical center of the viewport. Silently a no-op on routes (like the
+  // property detail pages) that don't have these section ids.
+  useEffect(() => {
+    const targets = links
+      .map((link) => document.querySelector(link.href))
+      .filter((el): el is Element => el !== null);
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveHref(`#${entry.target.id}`);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -31,16 +53,26 @@ export default function Nav() {
           Siteryo
         </span>
         <nav className="hidden gap-10 text-sm tracking-wide text-white/75 sm:flex">
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="group relative py-1 transition-colors hover:text-white"
-            >
-              {link.label}
-              <span className="absolute bottom-0 left-0 h-px w-0 bg-[var(--accent)] transition-all duration-300 group-hover:w-full" />
-            </a>
-          ))}
+          {links.map((link) => {
+            const active = link.href === activeHref;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                aria-current={active ? "true" : undefined}
+                className={`group relative py-1 transition-colors ${
+                  active ? "text-white" : "hover:text-white"
+                }`}
+              >
+                {link.label}
+                <span
+                  className={`absolute bottom-0 left-0 h-px bg-[var(--accent)] transition-all duration-300 ${
+                    active ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                />
+              </a>
+            );
+          })}
         </nav>
         <MagneticButton
           href="#contacto"

@@ -22,6 +22,11 @@ Abre [http://localhost:3000](http://localhost:3000).
 ## Estructura
 
 - `src/components/SmoothScroll.tsx` — provider de Lenis, respeta `prefers-reduced-motion`
+- `src/components/Nav.tsx` — nav fijo con scrollspy (`IntersectionObserver`
+  sobre las secciones de cada link, banda `-45%/-50%` del viewport):
+  resalta el link de la sección visible en vez de quedarse "mudo".
+  Antes "Estudio" y "Proceso" apuntaban a `href="#"` — ahora enlazan a
+  `#estudio` (Stats) y `#proceso` (segunda escena de `CinematicReveal`).
 - `src/components/Preloader.tsx` — intro con contador (~1.2s) antes de revelar el sitio
 - `src/components/Cursor.tsx` — cursor custom (punto + anillo) en desktop con puntero fino
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
@@ -111,7 +116,15 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/Properties.tsx` / `PropertyCard.tsx` — grid de propiedades
   con reveal por scroll (clip-path "curtain" en la imagen) y cursor de hover
 - `src/components/Stats.tsx` — contadores animados al entrar en viewport
-- `src/components/Contact.tsx` — formulario de contacto + footer
+- `src/components/Contact.tsx` — formulario de contacto + footer. El
+  formulario es funcional (antes solo hacía `preventDefault()` y no
+  enviaba nada): valida en cliente, llama a `POST /api/contact`
+  (`src/app/api/contact/route.ts`) y muestra estado de envío/éxito/error.
+  **Sin proveedor de email/CRM configurado** — la ruta valida y hace
+  `console.log` del lead en el servidor; para producción hay que
+  sustituirlo por un envío real (Resend, Postmark, un webhook al CRM…).
+- `src/app/not-found.tsx` — 404 de marca (antes caía en la genérica de
+  Next), con vuelta al inicio.
 - `src/lib/gsap.ts` — registro centralizado del plugin ScrollTrigger
 - `src/lib/useMediaQuery.ts` — hook de media query vía `useSyncExternalStore`
 - `src/lib/properties.ts` — datos de las propiedades mostradas. Sin precio
