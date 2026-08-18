@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import Preloader from "@/components/Preloader";
 import Cursor from "@/components/Cursor";
 import GrainOverlay from "@/components/GrainOverlay";
+import GuidedTour from "@/components/GuidedTour";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Nav />
           {children}
         </SmoothScroll>
+        <GuidedTour />
       </body>
     </html>
   );

@@ -26,6 +26,19 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/Cursor.tsx` — cursor custom (punto + anillo) en desktop con puntero fino
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
 - `src/components/GrainOverlay.tsx` — textura de grano fija sobre todo el sitio
+- `src/components/GuidedTour.tsx` — tour guiado de la interfaz (no 3D): un
+  botón flotante abre un recorrido de 4 pasos con spotlight (recorte vía
+  `box-shadow` sobre el elemento objetivo) + panel fijo con
+  título/descripción/paso actual. Se descartó un recorrido 3D/360°
+  porque no hay fotos 360° ni modelos `.glb` reales de las propiedades —
+  fabricarlos habría sido peor que no tenerlos. Usa `lenisRef` (ver
+  `src/lib/lenis.ts`) para el scroll animado entre pasos, ya que Lenis
+  fuerza `scroll-behavior: auto` y el `window.scrollTo({behavior:"smooth"})`
+  nativo no anima mientras Lenis está activo. Accesible: `role="dialog"`,
+  foco atrapado en el panel, `Escape`/flechas para navegar, foco devuelto
+  al botón disparador al cerrar, y respeta `prefers-reduced-motion`. Solo
+  se monta en `/` — sus pasos apuntan a secciones que no existen en
+  `/propiedades/[id]`.
 - `src/components/Hero.tsx` — hero a pantalla completa con parallax, fondo
   de vídeo real (`public/videos/hero-loop.mp4`/`.webm`, dolly de la villa
   con la piscina infinita, ida-vuelta para loop sin salto) en vez de una

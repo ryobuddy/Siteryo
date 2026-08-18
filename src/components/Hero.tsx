@@ -43,6 +43,7 @@ export default function Hero() {
 
   return (
     <section
+      id="inicio"
       ref={sectionRef}
       className="relative flex h-svh items-end overflow-hidden bg-[var(--foreground)]"
     >

@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { lenisRef } from "@/lib/lenis";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -25,9 +26,11 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     gsap.ticker.lagSmoothing(0);
 
     document.documentElement.classList.add("lenis");
+    lenisRef.current = lenis;
 
     return () => {
       lenis.destroy();
+      lenisRef.current = null;
       document.documentElement.classList.remove("lenis");
     };
   }, []);
