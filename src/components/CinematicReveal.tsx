@@ -16,13 +16,25 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-function drawImageCover(ctx: CanvasRenderingContext2D, img: HTMLImageElement, alpha: number) {
+// The villa cutout floats over its own custom background instead of
+// filling the frame — "cover" fit made it balloon to viewport size and
+// collide with the text overlay, since the source footage dollies in
+// closer with every frame. "Contain" + a fixed scale-down keeps it a
+// grounded, discrete object with breathing room around the copy, and
+// bottom-anchoring reads as the villa sitting on the gradient "ground"
+// instead of floating dead-center through the headline.
+const VILLA_SCALE = 0.5;
+const VILLA_VERTICAL_ANCHOR = 0.56;
+
+function drawImageContain(ctx: CanvasRenderingContext2D, img: HTMLImageElement, alpha: number) {
   const canvas = ctx.canvas;
-  const ratio = Math.max(canvas.width / img.width, canvas.height / img.height);
+  const ratio = Math.min(canvas.width / img.width, canvas.height / img.height) * VILLA_SCALE;
   const w = img.width * ratio;
   const h = img.height * ratio;
+  const x = (canvas.width - w) / 2;
+  const y = (canvas.height - h) * VILLA_VERTICAL_ANCHOR;
   ctx.globalAlpha = alpha;
-  ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  ctx.drawImage(img, x, y, w, h);
   ctx.globalAlpha = 1;
 }
 
@@ -40,8 +52,8 @@ function drawBlendedFrame(ctx: CanvasRenderingContext2D, images: HTMLImageElemen
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const imgA = images[i0];
   const imgB = images[i1];
-  if (imgA?.complete) drawImageCover(ctx, imgA, 1);
-  if (i1 !== i0 && imgB?.complete && frac > 0) drawImageCover(ctx, imgB, frac);
+  if (imgA?.complete) drawImageContain(ctx, imgA, 1);
+  if (i1 !== i0 && imgB?.complete && frac > 0) drawImageContain(ctx, imgB, frac);
 }
 
 function ChevronRight({ className }: { className?: string }) {
@@ -250,7 +262,7 @@ export default function CinematicReveal() {
                 <Badge>128 Propiedades Entregadas</Badge>
               </FadeInView>
               <FadeInView delay={280}>
-                <h1 className="text-5xl font-normal leading-[1.05] tracking-tight text-white drop-shadow-lg sm:text-6xl lg:text-7xl">
+                <h1 className="text-5xl font-normal leading-[1.05] tracking-tight text-white drop-shadow-[0_12px_36px_rgba(0,0,0,0.85)] sm:text-6xl lg:text-7xl">
                   Luz. Espacio.
                   <br />
                   Legado.
@@ -302,7 +314,7 @@ export default function CinematicReveal() {
           <div className="flex flex-1 flex-col justify-end gap-12 md:flex-row md:items-end md:justify-between md:gap-16">
             <div className="max-w-xl">
               <FadeInView delay={180}>
-                <h2 className="text-5xl font-normal leading-[1.05] tracking-tight text-white drop-shadow-lg sm:text-6xl lg:text-7xl">
+                <h2 className="text-5xl font-normal leading-[1.05] tracking-tight text-white drop-shadow-[0_12px_36px_rgba(0,0,0,0.85)] sm:text-6xl lg:text-7xl">
                   Cada detalle,
                   <br />a la vista.
                 </h2>
