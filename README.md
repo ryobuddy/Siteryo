@@ -61,14 +61,20 @@ Abre [http://localhost:3000](http://localhost:3000).
   centrado en el puntero, con `cover` fit calculado en el propio shader.
   Solo se activa con `(hover: hover) and (pointer: fine)` y
   `!prefers-reduced-motion`; cae a `next/image` normal en el resto de casos.
-- `src/components/LoopBackground.tsx` — loop de fondo tipo cinemagraph: secuencia
-  de frames (`<canvas>`, ida-vuelta/ping-pong para que cierre sin salto) en vez
-  de la foto estática de una card. Pausa el `requestAnimationFrame` fuera de
-  viewport (`IntersectionObserver`) y cae a una imagen fija con
-  `prefers-reduced-motion`. Usado en la card de "Ático Lumière" con
-  `public/frames/card-loop/` (cortina de lino moviéndose, generada con Kling
-  AI). Cada `Property` puede activar esta card-loop declarando
-  `loopBackground: { frameCount, prefix }` en `src/lib/properties.ts`.
+- `src/components/VideoLoopBackground.tsx` — loop de fondo tipo cinemagraph
+  con `<video autoplay muted loop playsInline>` nativo en vez de una foto
+  estática de card. Usado en "Ático Lumière" con
+  `public/videos/card-loop-lumiere.mp4`. Cae a una imagen fija con
+  `prefers-reduced-motion`. Cada `Property` puede activar esta card-loop
+  declarando `loopVideo: "/videos/…mp4"` en `src/lib/properties.ts`.
+  **Nota de implementación:** la primera versión decodificaba el vídeo a
+  frames PNG/WebP y los dibujaba a mano en un `<canvas>` (mismo patrón que
+  el hero). Se reemplazó por `<video>` nativo porque aquí no hace falta
+  scroll-scrub frame a frame — es un loop continuo — así que el decodificador
+  de hardware del navegador hace el trabajo mejor y con menos código que
+  reimplementarlo. (El hero sigue usando canvas + PNG porque ahí sí se
+  necesita seek preciso ligado al scroll, y el seek de `<video>` no es
+  suficientemente fino/estable para eso — ver nota del hero abajo.)
 - `src/components/CutoutParallaxReveal.tsx` — sección pineada con recorte
   (PNG sin fondo, fondo eliminado con un modelo de segmentación) de Casa
   Arena que "se construye" en escena mientras el terreno y el cielo cruzan
@@ -123,14 +129,16 @@ reemplazar los PNG en `public/frames/hero-cutout/`). El componente no
 necesita cambios si el número de frames es distinto — ajusta `FRAME_COUNT`
 al inicio de `CinematicReveal.tsx`.
 
-## Loop de fondo: `public/frames/card-loop/`
+## Loop de fondo: `public/videos/card-loop-lumiere.mp4`
 
-80 WebP (`f000.webp`…`f079.webp`, 900px de ancho) de una cortina de lino
-moviéndose con suavidad, generados también con Kling AI (5s, 1920×1080).
-A diferencia del hero, aquí **no hace falta quitar el fondo** — el clip entero
-es el fondo de la card, así que el proceso fue más simple: extraer frames,
-recortar la franja inferior (llevaba la marca de agua de Kling), reducir a 1
-de cada 3 frames y armar una secuencia ida-vuelta (ping-pong) para que el
-loop cierre sin salto, sin necesitar crossfade. Mismo aviso de licencia que
-el vídeo del hero: revisa los términos de la cuenta de Kling antes de
-producción.
+Vídeo real (no frames sueltos) de una cortina de lino moviéndose con
+suavidad, generado con Kling AI (5s, 1920×1080). A diferencia del hero, aquí
+**no hace falta quitar el fondo** — el clip entero es el fondo de la card —
+así que el procesado fue solo: recortar la franja inferior (llevaba la marca
+de agua de Kling), reescalar a 960px de ancho y construir con `ffmpeg` un
+clip ida-vuelta (`reverse` + `concat`) para que el loop del `<video loop>`
+cierre exactamente en el mismo frame de inicio/fin, sin salto ni crossfade
+necesario — el navegador hace el resto con su decodificador de vídeo. H.264
+1.2MB, `-movflags +faststart` para que arranque antes de descargarse entero.
+Mismo aviso de licencia que el vídeo del hero: revisa los términos de la
+cuenta de Kling antes de producción.

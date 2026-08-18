@@ -6,10 +6,8 @@ export type Property = {
   area: string;
   image: string;
   size: "large" | "small";
-  loopBackground?: {
-    frameCount: number;
-    prefix: string;
-  };
+  loopVideo?: string;
+  loopVideoWebm?: string;
 };
 
 export const properties: Property[] = [
@@ -30,7 +28,8 @@ export const properties: Property[] = [
     area: "210 m²",
     image: "/properties/lumiere.jpg",
     size: "small",
-    loopBackground: { frameCount: 80, prefix: "/frames/card-loop" },
+    loopVideo: "/videos/card-loop-lumiere.mp4",
+    loopVideoWebm: "/videos/card-loop-lumiere.webm",
   },
   {
     id: "villa-oliva",

@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useRef, type MouseEvent } from "react";
+import { useRef, type MouseEvent } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import DistortImage from "@/components/DistortImage";
-import LoopBackground from "@/components/LoopBackground";
+import VideoLoopBackground from "@/components/VideoLoopBackground";
 import type { Property } from "@/lib/properties";
 
 export default function PropertyCard({ property }: { property: Property }) {
@@ -20,13 +20,6 @@ export default function PropertyCard({ property }: { property: Property }) {
     y.set(event.clientY - bounds.top);
   }
 
-  const loopBackground = property.loopBackground;
-  const frameSrc = useCallback(
-    (index: number) =>
-      `${loopBackground?.prefix}/f${String(index).padStart(3, "0")}.webp`,
-    [loopBackground?.prefix]
-  );
-
   return (
     <a
       ref={cardRef}
@@ -39,10 +32,10 @@ export default function PropertyCard({ property }: { property: Property }) {
           : "aspect-[4/3] sm:aspect-[4/5]"
       }`}
     >
-      {loopBackground ? (
-        <LoopBackground
-          frameCount={loopBackground.frameCount}
-          frameSrc={frameSrc}
+      {property.loopVideo ? (
+        <VideoLoopBackground
+          src={property.loopVideo}
+          webmSrc={property.loopVideoWebm}
           fallbackSrc={property.image}
           alt={property.name}
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
