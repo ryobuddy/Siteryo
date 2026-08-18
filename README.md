@@ -27,22 +27,29 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/MagneticButton.tsx` — wrapper de botón/enlace con atracción magnética al cursor
 - `src/components/GrainOverlay.tsx` — textura de grano fija sobre todo el sitio
 - `src/components/Hero.tsx` — hero a pantalla completa con parallax
-- `src/components/CinematicReveal.tsx` — sección de dos escenas con fondo de
-  vídeo scrubbed por scroll (poster → video → canvas con caché de frames
-  offscreen, con lerp de suavizado y fallback a seek directo), fijada con
-  GSAP ScrollTrigger (`pin` sobre un layer `absolute`, no `position: sticky`
-  — ver nota abajo) mientras el contenido (badges de cristal, titular,
-  tarjeta de contacto, panel de "proceso") se desplaza por encima. Adaptado
-  de un prompt de recreación de landing de IA (stack React/Tailwind) al
-  contexto de Siteryo: mismo sistema de "glass" y reveals, copy y capas de
-  contenido reescritos para arquitectura residencial. Vídeo aún pendiente
-  (ver §Vídeo) — hasta entonces cae a `public/hero.jpg` como fondo estático.
-  **Nota de implementación:** la primera versión usaba `position: sticky` +
-  margen negativo para superponer el fondo al contenido; ese patrón resultó
-  frágil (el navegador calculaba mal el punto de "despegue" del sticky,
-  dejando el fondo visible sobre las secciones siguientes). Se sustituyó por
-  `ScrollTrigger({ pin, pinSpacing: false })` sobre un layer `absolute`,
-  igual que el resto de secciones pineadas del sitio.
+- `src/components/CinematicReveal.tsx` — sección de dos escenas con el
+  recorte (fondo transparente) de un vídeo real de la villa flotando sobre
+  un fondo propio (gradiente + partículas ambientales), fijada con GSAP
+  ScrollTrigger (`pin` sobre un layer `absolute`, no `position: sticky` —
+  ver nota abajo) mientras el contenido (badges de cristal, titular, tarjeta
+  de contacto, panel de "proceso") se desplaza por encima. Adaptado de un
+  prompt de recreación de landing de IA (stack React/Tailwind) al contexto
+  de Siteryo: mismo sistema de "glass" y reveals, copy y capas de contenido
+  reescritos para arquitectura residencial.
+  **Nota de implementación (sticky):** la primera versión usaba
+  `position: sticky` + margen negativo para superponer el fondo al
+  contenido; ese patrón resultó frágil (el navegador calculaba mal el punto
+  de "despegue" del sticky, dejando el fondo visible sobre las secciones
+  siguientes). Se sustituyó por `ScrollTrigger({ pin, pinSpacing: false })`
+  sobre un layer `absolute`, igual que el resto de secciones pineadas del
+  sitio.
+  **Nota de implementación (recorte de vídeo):** ver §Vídeo abajo — los
+  frames vienen de un vídeo generado con IA (Kling), no de una decodificación
+  de `<video>` en runtime. La primera versión sí decodificaba un
+  `hero-scrub.mp4` en vivo (poster → video → canvas con caché de frames
+  offscreen); se abandonó ese enfoque porque el objetivo pasó a ser un
+  recorte sin fondo, y aplicar `rembg` cuadro a cuadro solo tiene sentido
+  como paso de preprocesado, no en el navegador del visitante.
 - `src/components/FadeInView.tsx` — wrapper de reveal genérico
   (IntersectionObserver, `translate-y-8/opacity-0` → `translate-y-0/opacity-100`,
   700ms ease-out, delay configurable), usado dentro de `CinematicReveal`
@@ -77,13 +84,33 @@ grano generada, sin depender de bancos de imágenes externos.
 misma licencia que la foto original (Unsplash), sin depender de servicios
 externos de recorte.
 
-## Vídeo (pendiente)
+## Vídeo del Hero: `public/frames/hero-cutout/`
 
-`CinematicReveal` ya está construido y probado (cae a `public/hero.jpg`
-mientras tanto), solo falta el archivo. Cuando llegue el vídeo generado:
+38 PNG con transparencia (`f000.png`…`f037.png`, 1280px de ancho) que
+`CinematicReveal` precarga y dibuja en un `<canvas>` según el progreso de
+scroll — el mismo patrón de secuencia de frames que ya se usaba en el sitio,
+pero ahora con fondo transparente en vez de JPG opaco.
 
-1. Colócalo en `public/video/hero-scrub.mp4` (specs y prompts en el
-   [Motion Playbook](https://claude.ai/code/artifact/4ff833a2-2161-47fe-8e71-85df54fa11ed))
-2. `CinematicReveal` lo recoge automáticamente desde esa ruta — no hace
-   falta tocar `page.tsx`. Si el póster definitivo no debe ser
-   `public/hero.jpg`, cambia `POSTER_SRC` al inicio del componente.
+**Procedencia:** generados a partir de un vídeo real hecho con
+[Kling AI](https://klingai.com) (dolly + tracking shot de una villa, 5s,
+1920×1080), del que se extrajeron los primeros ~3.2s (76 frames a 24fps,
+luego reducidos a 38 tomando uno de cada dos) y se les quitó el fondo con
+`rembg` (`isnet-general-use`) cuadro a cuadro.
+
+**Por qué solo 3.2s del clip de 5s:** el recorte funciona muy bien mientras
+hay cielo/fondo real que quitar (plano abierto, tracking lateral), pero se
+rompe por completo en el primer plano final del clip — ahí toda la imagen
+es interior (paredes, puerta, suelo), no hay "fondo" que segmentar y el
+modelo devuelve casi todo transparente. Se verificó frame a frame antes de
+elegir el punto de corte (frame 75 limpio, frame 85 ya roto).
+
+**Licencia:** revisa los términos de la cuenta gratuita de Kling antes de
+usar este asset en producción — el tier gratis restringe el uso a no
+comercial en la mayoría de planes. Si el sitio va a producción real, genera
+el vídeo con una cuenta que cubra uso comercial.
+
+**Para regenerar con un vídeo nuevo:** repite el proceso (extraer frames →
+`rembg` cuadro a cuadro → recortar antes de que la cámara entre a interior →
+reemplazar los PNG en `public/frames/hero-cutout/`). El componente no
+necesita cambios si el número de frames es distinto — ajusta `FRAME_COUNT`
+al inicio de `CinematicReveal.tsx`.
