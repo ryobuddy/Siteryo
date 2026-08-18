@@ -2,9 +2,17 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import { motion } from "motion/react";
 import FadeInView from "@/components/FadeInView";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+// Slow vertical drift for the glass panels once revealed — keeps them from
+// reading as static blocks once the scroll-triggered reveal settles.
+const idleFloat = {
+  animate: { y: [0, -8, 0] },
+  transition: { duration: 6, repeat: Infinity, ease: "easeInOut" as const },
+};
 
 const FRAME_COUNT = 38;
 const FRAME_SRC = (i: number) => `/frames/hero-cutout/f${String(i).padStart(3, "0")}.png`;
@@ -75,15 +83,15 @@ function Badge({ children }: { children: React.ReactNode }) {
 const capabilities = [
   {
     title: "Curaduría en tiempo real",
-    body: "Filtramos cada propiedad antes de mostrártela, para que solo veas lo que encaja.",
+    body: "Solo llega a ti lo que encaja.",
   },
   {
     title: "Mirada en capas",
-    body: "De la primera foto a la visita en persona, sin perder el hilo de lo que buscas.",
+    body: "De la foto a la visita, sin perder el hilo.",
   },
   {
     title: "Ritmo adaptado",
-    body: "Ajustamos el proceso a tu calendario, sin prisas ni presión.",
+    body: "A tu calendario, sin presión.",
   },
 ];
 
@@ -264,8 +272,7 @@ export default function CinematicReveal() {
             </FadeInView>
             <FadeInView delay={300} className="max-w-xs sm:text-right">
               <p className="text-lg leading-relaxed text-white drop-shadow-md sm:text-xl">
-                Seleccionamos residencias donde el diseño, la luz y la ubicación
-                justifican cada metro cuadrado.
+                Diseño, luz y ubicación. Sin concesiones.
               </p>
             </FadeInView>
           </div>
@@ -285,7 +292,11 @@ export default function CinematicReveal() {
             </div>
 
             <FadeInView delay={420}>
-              <div className="flex items-center gap-4 rounded-xl bg-white/15 p-3 backdrop-blur-md">
+              <motion.div
+                animate={idleFloat.animate}
+                transition={idleFloat.transition}
+                className="flex items-center gap-4 rounded-xl bg-white/15 p-3 backdrop-blur-md"
+              >
                 <Image
                   src="/properties/arena.jpg"
                   alt="Casa Arena, Sotogrande"
@@ -304,7 +315,7 @@ export default function CinematicReveal() {
                     <ChevronRight />
                   </a>
                 </div>
-              </div>
+              </motion.div>
             </FadeInView>
           </div>
         </section>
@@ -319,8 +330,7 @@ export default function CinematicReveal() {
             </FadeInView>
             <FadeInView delay={220} className="max-w-sm sm:text-right">
               <p className="text-lg leading-relaxed text-white drop-shadow-md sm:text-xl">
-                No solo mostramos propiedades — interpretamos lo que buscas y
-                seleccionamos lo que de verdad importa.
+                Interpretamos lo que buscas. Mostramos lo que importa.
               </p>
             </FadeInView>
           </div>
@@ -335,9 +345,7 @@ export default function CinematicReveal() {
               </FadeInView>
               <FadeInView delay={320}>
                 <p className="mt-6 max-w-md text-sm text-white/80 drop-shadow-md sm:text-base">
-                  Desde la primera visita hasta la firma, Siteryo convierte cada
-                  búsqueda en una decisión clara — con calma, con precisión, a tu
-                  ritmo.
+                  De la visita a la firma, sin prisas ni ruido.
                 </p>
               </FadeInView>
               <FadeInView delay={420}>
@@ -360,7 +368,11 @@ export default function CinematicReveal() {
             </div>
 
             <FadeInView delay={260} className="w-full max-w-md">
-              <div className="rounded-2xl border border-white/15 bg-white/10 px-5 backdrop-blur-md sm:px-6">
+              <motion.div
+                animate={idleFloat.animate}
+                transition={{ ...idleFloat.transition, duration: 7 }}
+                className="rounded-2xl border border-white/15 bg-white/10 px-5 backdrop-blur-md sm:px-6"
+              >
                 {capabilities.map((item, i) => (
                   <FadeInView
                     key={item.title}
@@ -377,7 +389,7 @@ export default function CinematicReveal() {
                     </div>
                   </FadeInView>
                 ))}
-              </div>
+              </motion.div>
             </FadeInView>
           </div>
         </section>

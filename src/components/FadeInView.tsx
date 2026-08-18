@@ -33,8 +33,10 @@ export default function FadeInView({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out will-change-transform ${
-        visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+      className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
+        visible
+          ? "translate-y-0 scale-100 opacity-100 blur-none"
+          : "translate-y-8 scale-[0.97] opacity-0 blur-sm"
       } ${className ?? ""}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
