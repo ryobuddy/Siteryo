@@ -87,6 +87,18 @@ Abre [http://localhost:3000](http://localhost:3000).
   700ms ease-out, delay configurable), usado dentro de `CinematicReveal`
 - `src/components/RevealText.tsx` — reveal de titulares línea a línea con
   máscara `overflow-hidden`, reutilizado en Hero, Propiedades y Contacto
+- `src/components/WebGLVideoHero.tsx` — el vídeo del Hero no es un
+  `<video>` plano: se decodifica en un `<video>` invisible (fuera de
+  pantalla vía `opacity-0`, nunca `display:none` — algunos navegadores
+  dejan de decodificar un `<video>` con `display:none`, y de hecho eso
+  rompía el autoplay hasta que se cambió) y cada frame se sube como
+  textura a un shader WebGL2 propio (mismo patrón sin dependencias que
+  `DistortImage`, adaptado a una fuente que cambia cada frame en vez de
+  una imagen estática): distorsión radial que sigue al cursor, grano
+  animado por función de ruido (`random()` en el fragment shader, no una
+  textura de ruido pregenerada) y una aberración cromática sutil cerca
+  del puntero. Solo se activa con `(hover: hover) and (pointer: fine)` y
+  `!prefers-reduced-motion`; cae al `<video>` nativo en el resto de casos.
 - `src/components/DistortImage.tsx` — distorsión líquida por shader WebGL2
   (sin dependencias — WebGL nativo) sobre la imagen de cada
   `PropertyCard` al pasar el cursor: desplazamiento radial + ripple

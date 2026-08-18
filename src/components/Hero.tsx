@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { gsap } from "@/lib/gsap";
 import { useMediaQuery } from "@/lib/useMediaQuery";
+import WebGLVideoHero from "@/components/WebGLVideoHero";
 
 const headline = ["Arquitectura", "que se habita", "antes de vivirla."];
 
@@ -54,19 +55,12 @@ export default function Hero() {
         {prefersReducedMotion ? (
           <div className="h-full w-full bg-[url('/hero.jpg')] bg-cover bg-center" />
         ) : (
-          <video
-            className="h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
+          <WebGLVideoHero
+            src="/videos/hero-loop.mp4"
+            webmSrc="/videos/hero-loop.webm"
             poster="/hero.jpg"
-            aria-hidden
-          >
-            <source src="/videos/hero-loop.webm" type="video/webm" />
-            <source src="/videos/hero-loop.mp4" type="video/mp4" />
-          </video>
+            className="h-full w-full object-cover"
+          />
         )}
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--foreground)] via-[var(--foreground)]/10 to-[var(--foreground)]/30" />
