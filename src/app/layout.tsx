@@ -22,6 +22,29 @@ export const metadata: Metadata = {
   title: "Siteryo — Arquitectura residencial de autor",
   description:
     "Propiedades seleccionadas donde el diseño, la luz y el espacio son parte de la inversión.",
+  icons: {
+    icon: [{ url: "/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "Siteryo — Arquitectura residencial de autor",
+    description:
+      "Propiedades seleccionadas donde el diseño, la luz y el espacio son parte de la inversión.",
+    images: ["/hero.jpg"],
+    locale: "es_ES",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Siteryo — Arquitectura residencial de autor",
+    description:
+      "Propiedades seleccionadas donde el diseño, la luz y el espacio son parte de la inversión.",
+    images: ["/hero.jpg"],
+  },
+};
+
+export const viewport = {
+  themeColor: "#16140f",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

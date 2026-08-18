@@ -19,6 +19,31 @@ body {
   color: var(--foreground);
 }
 
+::selection {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+html {
+  scrollbar-color: var(--accent) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 9999px;
+  border: 2px solid var(--background);
+  background-clip: padding-box;
+}
+
 .font-serif {
   font-family: var(--font-serif), serif;
 }

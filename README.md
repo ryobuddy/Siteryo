@@ -178,3 +178,15 @@ necesario — el navegador hace el resto con su decodificador de vídeo. H.264
 1.2MB, `-movflags +faststart` para que arranque antes de descargarse entero.
 Mismo aviso de licencia que el vídeo del hero: revisa los términos de la
 cuenta de Kling antes de producción.
+
+## Identidad de marca
+
+`src/app/favicon.ico`, `public/icon-192.png`, `public/icon-512.png` y
+`public/apple-touch-icon.png` son un monograma "S" (Liberation Serif,
+`--accent` sobre `--foreground`) generado localmente para reemplazar el
+triángulo por defecto de Next.js — antes el sitio no tenía favicon de marca.
+`src/app/layout.tsx` referencia estos iconos y añade metadatos Open
+Graph/Twitter (título, descripción, `/hero.jpg` como imagen) y
+`theme-color`. `globals.css` define `::selection` y el color de la
+scrollbar con `--accent`, en vez de dejar los valores por defecto del
+navegador.
