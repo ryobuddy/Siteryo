@@ -16,13 +16,32 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-function drawCover(ctx: CanvasRenderingContext2D, img: HTMLImageElement) {
+function drawImageCover(ctx: CanvasRenderingContext2D, img: HTMLImageElement, alpha: number) {
   const canvas = ctx.canvas;
   const ratio = Math.max(canvas.width / img.width, canvas.height / img.height);
   const w = img.width * ratio;
   const h = img.height * ratio;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.globalAlpha = alpha;
   ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  ctx.globalAlpha = 1;
+}
+
+// Cross-dissolves between the two nearest frames instead of hard-cutting on
+// the rounded index — the frame sequence only has 38 source images, so a
+// hard cut between them reads as a flicker as the scroll speeds up.
+function drawBlendedFrame(ctx: CanvasRenderingContext2D, images: HTMLImageElement[], position: number) {
+  const canvas = ctx.canvas;
+  const lastIndex = images.length - 1;
+  const clamped = clamp(position, 0, lastIndex);
+  const i0 = Math.floor(clamped);
+  const i1 = Math.min(i0 + 1, lastIndex);
+  const frac = clamped - i0;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const imgA = images[i0];
+  const imgB = images[i1];
+  if (imgA?.complete) drawImageCover(ctx, imgA, 1);
+  if (i1 !== i0 && imgB?.complete && frac > 0) drawImageCover(ctx, imgB, frac);
 }
 
 function ChevronRight({ className }: { className?: string }) {
@@ -142,9 +161,11 @@ export default function CinematicReveal() {
           }
           // Hold on the last frame past the footage's own progress range —
           // the villa settles while Section Two's content scrolls over it.
-          const idx = clamp(Math.round(p * 2.2 * (images.length - 1)), 0, images.length - 1);
-          const img = images[idx];
-          if (img.complete) drawCover(ctx, img);
+          // Blend between the two nearest frames instead of snapping to the
+          // rounded one, since 38 source frames is coarse enough to flicker
+          // on a hard cut once the scroll speeds up.
+          const position = p * 2.2 * (images.length - 1);
+          drawBlendedFrame(ctx, images, position);
         }
       }
 
