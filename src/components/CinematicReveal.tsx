@@ -323,7 +323,7 @@ export default function CinematicReveal() {
         <div className="h-[80vh]" aria-hidden />
 
         {/* Section Two */}
-        <section className="flex min-h-svh flex-col justify-between pb-12 md:pb-16">
+        <section id="proceso" className="flex min-h-svh flex-col justify-between pb-12 md:pb-16">
           <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
             <FadeInView delay={120}>
               <Badge>Proceso a medida</Badge>

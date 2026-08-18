@@ -6,8 +6,8 @@ import MagneticButton from "@/components/MagneticButton";
 
 const links = [
   { label: "Propiedades", href: "#propiedades" },
-  { label: "Estudio", href: "#" },
-  { label: "Proceso", href: "#" },
+  { label: "Estudio", href: "#estudio" },
+  { label: "Proceso", href: "#proceso" },
   { label: "Contacto", href: "#contacto" },
 ];
 

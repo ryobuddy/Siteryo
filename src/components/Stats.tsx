@@ -33,7 +33,10 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 
 export default function Stats() {
   return (
-    <section className="border-y border-[var(--foreground)]/10 bg-[var(--background)] px-6 py-20 sm:px-10">
+    <section
+      id="estudio"
+      className="border-y border-[var(--foreground)]/10 bg-[var(--background)] px-6 py-20 sm:px-10"
+    >
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-10 sm:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.label} className="text-center sm:text-left">
