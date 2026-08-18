@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { gsap } from "@/lib/gsap";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 
 type MagneticButtonProps =
   | ({ as: "button"; strength?: number; children: ReactNode } & ButtonHTMLAttributes<HTMLButtonElement>)
@@ -16,8 +17,10 @@ export default function MagneticButton({
   ...props
 }: MagneticButtonProps) {
   const ref = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
+    if (prefersReducedMotion) return;
     const bounds = ref.current?.getBoundingClientRect();
     if (!bounds) return;
     const x = e.clientX - bounds.left - bounds.width / 2;
@@ -31,6 +34,7 @@ export default function MagneticButton({
   }
 
   function handleMouseLeave() {
+    if (prefersReducedMotion) return;
     gsap.to(ref.current, {
       x: 0,
       y: 0,
