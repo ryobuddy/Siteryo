@@ -93,18 +93,26 @@ Abre [http://localhost:3000](http://localhost:3000).
   dejan de decodificar un `<video>` con `display:none`, y de hecho eso
   rompía el autoplay hasta que se cambió) y cada frame se sube como
   textura a un shader WebGL2 propio (mismo patrón sin dependencias que
-  `DistortImage`, adaptado a una fuente que cambia cada frame en vez de
+  `AmbientImage`, adaptado a una fuente que cambia cada frame en vez de
   una imagen estática): distorsión radial que sigue al cursor, grano
   animado por función de ruido (`random()` en el fragment shader, no una
   textura de ruido pregenerada) y una aberración cromática sutil cerca
   del puntero. Solo se activa con `(hover: hover) and (pointer: fine)` y
   `!prefers-reduced-motion`; cae al `<video>` nativo en el resto de casos.
-- `src/components/DistortImage.tsx` — distorsión líquida por shader WebGL2
-  (sin dependencias — WebGL nativo) sobre la imagen de cada
-  `PropertyCard` al pasar el cursor: desplazamiento radial + ripple
-  centrado en el puntero, con `cover` fit calculado en el propio shader.
-  Solo se activa con `(hover: hover) and (pointer: fine)` y
-  `!prefers-reduced-motion`; cae a `next/image` normal en el resto de casos.
+- `src/components/AmbientImage.tsx` — reemplaza a `DistortImage`. La
+  diferencia no es cosmética: `DistortImage` solo se movía al pasar el
+  cursor (quieta el resto del tiempo); `AmbientImage` anima sola, todo el
+  tiempo, con un shader WebGL2 propio (sin dependencias) que combina un
+  ripple tipo líquido continuo (dos ondas seno/coseno en función de
+  `uTime`), un zoom lento tipo Ken Burns que oscila (`uTime * 0.1`) y
+  grano animado — el cursor solo añade un ripple extra encima en
+  dispositivos con puntero, no es la fuente del movimiento. Usada en las
+  3 cards sin vídeo propio (Casa Arena, Villa Oliva, Loft Bruma). Al ser
+  animación continua (no solo hover), se activa en todos los
+  dispositivos — pausa el `requestAnimationFrame` fuera de viewport vía
+  `IntersectionObserver` para no quemar GPU en cards que no se ven, y cae
+  a `next/image` estática con `prefers-reduced-motion` o si WebGL2 no
+  está disponible.
 - `src/components/VideoLoopBackground.tsx` — loop de fondo tipo cinemagraph
   con `<video autoplay muted loop playsInline>` nativo en vez de una foto
   estática de card. Usado en "Ático Lumière" con

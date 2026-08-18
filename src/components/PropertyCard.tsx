@@ -3,7 +3,7 @@
 import { useRef, type MouseEvent } from "react";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring } from "motion/react";
-import DistortImage from "@/components/DistortImage";
+import AmbientImage from "@/components/AmbientImage";
 import VideoLoopBackground from "@/components/VideoLoopBackground";
 import type { Property } from "@/lib/properties";
 
@@ -44,7 +44,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
       ) : (
-        <DistortImage
+        <AmbientImage
           src={property.image}
           alt={`${property.name}, ${property.location} — ${property.description}`}
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
