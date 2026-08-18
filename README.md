@@ -85,7 +85,8 @@ Abre [http://localhost:3000](http://localhost:3000).
   sobre un layer `absolute`, igual que el resto de secciones pineadas del
   sitio.
   **Nota de implementación (recorte de vídeo):** ver §Vídeo abajo — los
-  frames vienen de un vídeo generado con IA (Kling), no de una decodificación
+  frames vienen de preprocesar un vídeo real (antes generado con IA/Kling,
+  ahora un clip de stock de Pexels) con `rembg`, no de una decodificación
   de `<video>` en runtime. La primera versión sí decodificaba un vídeo
   fuente en vivo (poster → video → canvas con caché de frames offscreen,
   un archivo distinto al `hero-scrub.mp4` actual del `Hero` — nombre
@@ -211,55 +212,53 @@ clip de 60fps con mucho movimiento el VP9 salió más pesado que el H.264
 (22MB vs 10MB), así que no había motivo real para mantener el segundo
 formato.
 
-`public/videos/ambient-loop.mp4`/`.webm` (capa de luz difuminada detrás
-del recorte de la villa en `CinematicReveal`) sigue viniendo del metraje
-de Kling AI, sin relación con el cambio de arriba — cae a la imagen/
-gradiente estático con `prefers-reduced-motion`.
+`public/videos/ambient-loop.mp4` (capa de luz difuminada detrás del recorte
+de la villa en `CinematicReveal`) viene del mismo clip de Pexels que el
+hero — no de Kling AI, ya no depende de generación por IA — reescalado a
+480px (va con `blur-2xl`, la resolución no importa) e ida-vuelta
+(`reverse`+`concat`) para loop sin salto. Solo MP4: para este contenido tan
+difuminado el WebM salía más pesado, mismo motivo que el hero. Cae a la
+imagen/gradiente estático con `prefers-reduced-motion`.
 
 ## Recorte de la villa en CinematicReveal: `public/frames/hero-cutout/`
 
-38 PNG con transparencia (`f000.png`…`f037.png`, 1280px de ancho) que
+42 WebP con transparencia (`f000.webp`…`f041.webp`, 1280px de ancho) que
 `CinematicReveal` precarga y dibuja en un `<canvas>` según el progreso de
-scroll — el mismo patrón de secuencia de frames que ya se usaba en el sitio,
-pero ahora con fondo transparente en vez de JPG opaco.
+scroll.
 
-**Procedencia:** generados a partir de un vídeo real hecho con
-[Kling AI](https://klingai.com) (dolly + tracking shot de una villa, 5s,
-1920×1080), del que se extrajeron los primeros ~3.2s (76 frames a 24fps,
-luego reducidos a 38 tomando uno de cada dos) y se les quitó el fondo con
-`rembg` (`isnet-general-use`) cuadro a cuadro.
+**Procedencia:** ya no es metraje de Kling AI — es un vídeo real de stock,
+["An Exterior Design of a Modern House"](https://www.pexels.com) (Pexels,
+licencia libre para uso comercial), del que se extrajeron los primeros
+~6.9s (165 frames a 24fps, reducidos a 42 tomando uno de cada cuatro) y se
+les quitó el fondo con `rembg` (`isnet-general-use`) cuadro a cuadro —
+mismo proceso que antes, aplicado a un clip real en vez de generado por IA.
 
-**Por qué solo 3.2s del clip de 5s:** el recorte funciona muy bien mientras
-hay cielo/fondo real que quitar (plano abierto, tracking lateral), pero se
-rompe por completo en el primer plano final del clip — ahí toda la imagen
-es interior (paredes, puerta, suelo), no hay "fondo" que segmentar y el
-modelo devuelve casi todo transparente. Se verificó frame a frame antes de
-elegir el punto de corte (frame 75 limpio, frame 85 ya roto).
+**Por qué solo ~6.9s del clip de 20s:** mismo patrón que la primera versión
+— el recorte funciona muy bien mientras hay cielo/fondo simple que quitar
+(la cámara se acerca caminando hacia la casa con cielo despejado detrás),
+pero se degrada cuando la cámara pasa bajo el porche techado y el fondo se
+vuelve complejo (sombra, columnas, interior visible a través del vidrio).
+Se verificó frame a frame antes de elegir el corte (frame 165 limpio,
+frame 170 ya se empieza a desvanecer).
 
-**Licencia:** revisa los términos de la cuenta gratuita de Kling antes de
-usar este asset en producción — el tier gratis restringe el uso a no
-comercial en la mayoría de planes. Si el sitio va a producción real, genera
-el vídeo con una cuenta que cubra uso comercial.
+**Licencia:** licencia Pexels — libre para uso comercial, sin atribución
+obligatoria. Sin restricciones de tier gratuito como tenía Kling.
 
 **Para regenerar con un vídeo nuevo:** repite el proceso (extraer frames →
-`rembg` cuadro a cuadro → recortar antes de que la cámara entre a interior →
-reemplazar los PNG en `public/frames/hero-cutout/`). El componente no
+`rembg` cuadro a cuadro → recortar donde el fondo deje de ser segmentable →
+reemplazar los WebP en `public/frames/hero-cutout/`). El componente no
 necesita cambios si el número de frames es distinto — ajusta `FRAME_COUNT`
 al inicio de `CinematicReveal.tsx`.
 
-## Loop de fondo: `public/videos/card-loop-lumiere.mp4`
+## Loop de fondo: `public/videos/card-loop-lumiere.mp4`/`.webm`
 
-Vídeo real (no frames sueltos) de una cortina de lino moviéndose con
-suavidad, generado con Kling AI (5s, 1920×1080). A diferencia del hero, aquí
-**no hace falta quitar el fondo** — el clip entero es el fondo de la card —
-así que el procesado fue solo: recortar la franja inferior (llevaba la marca
-de agua de Kling), reescalar a 960px de ancho y construir con `ffmpeg` un
-clip ida-vuelta (`reverse` + `concat`) para que el loop del `<video loop>`
-cierre exactamente en el mismo frame de inicio/fin, sin salto ni crossfade
-necesario — el navegador hace el resto con su decodificador de vídeo. H.264
-1.2MB, `-movflags +faststart` para que arranque antes de descargarse entero.
-Mismo aviso de licencia que el vídeo del hero: revisa los términos de la
-cuenta de Kling antes de producción.
+Vídeo real (no frames sueltos) de una cortina de lino moviéndose con la
+brisa junto a una ventana — ["Wind Blowing The
+Curtain"](https://www.pexels.com) (Pexels, licencia libre), no Kling AI.
+Recortado a la franja donde la tela llena la mayor parte del cuadro,
+reescalado a 960px de ancho, ida-vuelta (`reverse`+`concat`) para loop sin
+salto — el navegador decodifica el resto. MP4 10MB / WebM 4.7MB (acá el
+WebM sí gana, a diferencia del hero: menos resolución y movimiento).
 
 ## Identidad de marca
 

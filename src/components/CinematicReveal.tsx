@@ -14,8 +14,8 @@ const idleFloat = {
   transition: { duration: 6, repeat: Infinity, ease: "easeInOut" as const },
 };
 
-const FRAME_COUNT = 38;
-const FRAME_SRC = (i: number) => `/frames/hero-cutout/f${String(i).padStart(3, "0")}.png`;
+const FRAME_COUNT = 42;
+const FRAME_SRC = (i: number) => `/frames/hero-cutout/f${String(i).padStart(3, "0")}.webp`;
 const PARTICLE_COUNT = 16;
 
 const label = "font-sans text-[11px] uppercase tracking-[0.15em]";
@@ -212,7 +212,6 @@ export default function CinematicReveal() {
             preload="auto"
             aria-hidden
           >
-            <source src="/videos/ambient-loop.webm" type="video/webm" />
             <source src="/videos/ambient-loop.mp4" type="video/mp4" />
           </video>
         )}
