@@ -101,7 +101,20 @@ Abre [http://localhost:3000](http://localhost:3000).
 - `src/components/Contact.tsx` — formulario de contacto + footer
 - `src/lib/gsap.ts` — registro centralizado del plugin ScrollTrigger
 - `src/lib/useMediaQuery.ts` — hook de media query vía `useSyncExternalStore`
-- `src/lib/properties.ts` — datos de las propiedades mostradas
+- `src/lib/properties.ts` — datos de las propiedades mostradas. Sin precio
+  ni superficie: son fotos de stock (Unsplash) sobre inmuebles que no
+  existen como tal, así que mostrar cifras concretas (`€2.450.000`,
+  `480 m²`) sería presentar como reales datos inventados. Cada propiedad
+  solo lleva nombre, ubicación y una `description` de una frase, estilo
+  editorial y no verificable (nunca superficie/precio), que sí se puede
+  escribir con libertad creativa sin fingir un dato factual.
+- `src/app/propiedades/[id]/page.tsx` — ficha de propiedad (rutas
+  estáticas vía `generateStaticParams`, una por cada id en
+  `properties.ts`): hero con la misma imagen/vídeo de la card, título con
+  `RevealText`, párrafo de descripción, aviso explícito de que es una
+  ficha de referencia, CTA a `/#contacto`, y un grid de "Otras
+  propiedades". Antes las cards no llevaban a ningún sitio (`href="#"`);
+  ahora `PropertyCard` usa `next/link` hacia esta ruta.
 
 Las imágenes en `public/properties/` y `public/hero.jpg` son fotografía real
 con licencia libre (Unsplash). `public/grain.jpg` sigue siendo una textura de

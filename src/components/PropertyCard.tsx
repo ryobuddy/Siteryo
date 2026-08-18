@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type MouseEvent } from "react";
+import Link from "next/link";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import DistortImage from "@/components/DistortImage";
 import VideoLoopBackground from "@/components/VideoLoopBackground";
@@ -21,10 +22,10 @@ export default function PropertyCard({ property }: { property: Property }) {
   }
 
   return (
-    <a
+    <Link
       ref={cardRef}
       data-card
-      href="#"
+      href={`/propiedades/${property.id}`}
       onMouseMove={handleMouseMove}
       className={`group relative block overflow-hidden rounded-sm bg-[var(--foreground)]/5 ${
         property.size === "large"
@@ -56,16 +57,10 @@ export default function PropertyCard({ property }: { property: Property }) {
         Ver ficha
       </motion.div>
 
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-5 text-white">
-        <div>
-          <p className="font-serif text-lg">{property.name}</p>
-          <p className="text-xs tracking-wide text-white/70">{property.location}</p>
-        </div>
-        <div className="text-right text-xs tracking-wide text-white/80 opacity-100 transition-opacity duration-500 sm:opacity-0 sm:group-hover:opacity-100">
-          <p>{property.price}</p>
-          <p>{property.area}</p>
-        </div>
+      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+        <p className="font-serif text-lg">{property.name}</p>
+        <p className="text-xs tracking-wide text-white/70">{property.location}</p>
       </div>
-    </a>
+    </Link>
   );
 }

@@ -2,8 +2,7 @@ export type Property = {
   id: string;
   name: string;
   location: string;
-  price: string;
-  area: string;
+  description: string;
   image: string;
   size: "large" | "small";
   loopVideo?: string;
@@ -15,8 +14,8 @@ export const properties: Property[] = [
     id: "casa-arena",
     name: "Casa Arena",
     location: "Sotogrande, Cádiz",
-    price: "€2.450.000",
-    area: "480 m²",
+    description:
+      "Volumen contemporáneo entre pinos, con cubierta volada y el jardín como prolongación del salón.",
     image: "/properties/arena.jpg",
     size: "large",
   },
@@ -24,8 +23,8 @@ export const properties: Property[] = [
     id: "atico-lumiere",
     name: "Ático Lumière",
     location: "Salamanca, Madrid",
-    price: "€1.890.000",
-    area: "210 m²",
+    description:
+      "Luz cenital y techos altos en el barrio de Salamanca, con la calle como telón de fondo.",
     image: "/properties/lumiere.jpg",
     size: "small",
     loopVideo: "/videos/card-loop-lumiere.mp4",
@@ -35,8 +34,8 @@ export const properties: Property[] = [
     id: "villa-oliva",
     name: "Villa Oliva",
     location: "Marbella, Málaga",
-    price: "€3.200.000",
-    area: "610 m²",
+    description:
+      "Líneas depuradas y piscina infinita frente a la sierra, pensada para el clima mediterráneo.",
     image: "/properties/oliva.jpg",
     size: "small",
   },
@@ -44,8 +43,8 @@ export const properties: Property[] = [
     id: "loft-bruma",
     name: "Loft Bruma",
     location: "Poblenou, Barcelona",
-    price: "€980.000",
-    area: "160 m²",
+    description:
+      "Antigua nave reconvertida en vivienda de planta abierta, con el verde entrando por los ventanales.",
     image: "/properties/bruma.jpg",
     size: "large",
   },
